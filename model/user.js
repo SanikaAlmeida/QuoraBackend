@@ -26,8 +26,8 @@ const userSchema=new Schema({
         type:Number,
         unique:true,
         required:true,
-        min:10,
-        max:10
+        // min:10,
+        // max:10
     }
 })
 
