@@ -1,4 +1,7 @@
 const User = require('../model/user')
+const bcrypt=require('bcryptjs')
+const jwt=require('jsonwebtoken')
+const sendmail=require('./nodemailer')
 
 const register = async (req,res)=>{
     try{
@@ -8,6 +11,7 @@ const register = async (req,res)=>{
             email:req.body.email,
             mobileno:req.body.mobileno,
         })
+        user.password=await bcrypt.hash(user.password, 10)
         const user1=await user.save()
         res.send("Sign up done successfully")
     }
@@ -23,8 +27,13 @@ const log= async(req,res)=>{
 
         const user=await User.findOne({email:email})
         if(user){
-            if(user.password==password){
-                return res.status(201).send("Successfully loged in")
+            const validpassword= await bcrypt.compare(password, user.password)
+            if(validpassword){
+                const token=jwt.sign({_id:user._id},process.env.TOKEN_KEY,{expiresIn: "1h"})
+                res.json(token);
+
+                sendmail();
+                
             }else{
                 return res.send("Incorrect")
             }
@@ -32,6 +41,7 @@ const log= async(req,res)=>{
         else{
             return res.status(201).send("User not found")
         }
+
     }
     catch(error){
         res.status(500).send(error)
