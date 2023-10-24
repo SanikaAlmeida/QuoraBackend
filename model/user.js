@@ -26,9 +26,13 @@ const userSchema=new Schema({
         type:Number,
         unique:true,
         required:true,
-        // min:10,
-        // max:10
-    }
+    },
+    followers:[{
+        type: mongoose.Schema.Types.ObjectId,ref:'User',default:0
+    }],
+    following:[{
+        type: mongoose.Schema.Types.ObjectId,ref:'User',default:0
+    }]
 })
 
 module.exports=mongoose.model('User',userSchema)

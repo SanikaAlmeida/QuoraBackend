@@ -48,7 +48,41 @@ const log= async(req,res)=>{
     }
 }
 
+const follow=async(req,res)=>{
+    try {
+        const followuser= await User.findById(req.params.id)
+        const followinguser= await User.findById(req.user._id)
+        if(!followuser || !followinguser){
+            return res.send("Wrong user id")
+        }
+        followuser.followers.push(req.user._id)
+        followinguser.following.push(req.params.id)
+        await followuser.save()
+        await followinguser.save()
+        res.send("Followed")
+    } catch (error) {
+        res.status(500).send(error)        
+    }
+}
+
+const unfollow=async(req,res)=>{
+    try {
+        const followuser= await User.findById(req.params.id)
+        const followinguser= await User.findById(req.user._id)
+        if(!followuser || !followinguser){
+            return res.send("Wrong user id")
+        }
+        followuser.followers.pull(req.user._id)
+        followinguser.following.pull(req.params.id)
+        await followuser.save()
+        await followinguser.save()
+        res.send("Unfollowed")
+    } catch (error) {
+        res.status(500).send(error)        
+    }
+}
 module.exports ={
     register,
-    log
+    log,
+    follow, unfollow
 }
