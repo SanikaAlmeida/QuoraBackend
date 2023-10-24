@@ -17,7 +17,7 @@ const ask=async (req,res)=>{
 
 const displayques= async(req,res)=>{
     try{
-           const questions= await Question.find()
+           const questions= await Question.find(req.query)
            res.json(questions)
     }
     catch(error){
