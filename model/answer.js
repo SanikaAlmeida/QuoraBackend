@@ -15,7 +15,15 @@ const answerSchema=new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'Question',
         required:true,
-    }
+    },
+    upvote:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',default:0
+    }],
+    downvote:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',default:0
+    }]
 })
 
 module.exports=mongoose.model('Answer',answerSchema)
