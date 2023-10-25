@@ -22,6 +22,9 @@ app.use('/question',questionRouter)
 const answerRouter=require('./routes/answer')  
 app.use('/answer',answerRouter)
 
+const commentRouter=require('./routes/comment')  
+app.use('/comment',commentRouter)
+
   app.listen(port,()=>{
     console.log("Running on port 8080")
   })
