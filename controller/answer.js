@@ -4,7 +4,7 @@ const Question=require('../model/question')
 const ans= async(req,res)=>{
     const answer=new Answer({
         answer:req.body.answer,
-        user:req.body.user,
+        user:req.user._id,
         question:req.body.question
     })
     try{
@@ -45,7 +45,23 @@ const downvote=async(req,res)=>{
         res.status(500).send(error)
     }
 }
-
+const deleteans=async(req,res)=>{
+    try {
+        const ans=await Answer.findById(req.body.id)
+        const q1=await ans.deleteOne()
+        res.send("Answer deleted successfully")
+    } catch (error) {
+        res.send("Error in answer deletion")
+    }
+}
+const updateanswer=async(req,res)=>{
+    try {
+        const user=await Answer.findByIdAndUpdate(req.params.id,req.body,)
+        res.send("Update done")
+    } catch (error) {
+        res.status(500).send("Upadation not done")
+    }
+}
 module.exports={ 
-    ans,upvote,downvote
+    ans,upvote,downvote,deleteans,updateanswer
  }

@@ -2,6 +2,7 @@ const User = require('../model/user')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
 const sendmail=require('./nodemailer')
+const cloudinary=require('cloudinary').v2
 
 const register = async (req,res)=>{
     try{
@@ -64,7 +65,14 @@ const follow=async(req,res)=>{
         res.status(500).send(error)        
     }
 }
-
+const getusers=async(req,res)=>{
+    try {
+        const user=await User.find()
+        res.json(user)
+    } catch (error) {
+        res.send("Error")
+    }
+}
 const unfollow=async(req,res)=>{
     try {
         const followuser= await User.findById(req.params.id)
@@ -81,8 +89,52 @@ const unfollow=async(req,res)=>{
         res.status(500).send(error)        
     }
 }
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+const uploadprofilepic= async(req,res)=>{
+    try {
+        const result = await cloudinary.uploader.upload(req.file.path);
+        const profilePicUrl = result.secure_url;
+
+        const user = await User.findById(req.user._id);
+        user.profilePicUrl = profilePicUrl;
+        await user.save();
+        return res.send("Profile picture uploaded and saved.");
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+}
+const deleteuser=async(req,res)=>{
+    try {
+        const user=await User.findById(req.user._id)
+        const u1=await user.deleteOne()
+        res.send("User deleted successfully")
+    } catch (error) {
+        res.status(500).send("Error in deleting user")
+    }
+}
+const getfollower=async(req,res)=>{
+    try {
+        const user =await User.findById(req.user._id)
+        res.send(user.followers)
+    } catch (error) {
+        res.status(500).send("Error while fetching followers")
+    }
+}
+const updateuser=async(req,res)=>{
+    try {
+        const user=await User.findByIdAndUpdate(req.user._id,req.body,)
+        res.send("Update done")
+    } catch (error) {
+        res.status(500).send("Upadation not done")
+    }
+}
 module.exports ={
     register,
     log,
-    follow, unfollow
+    follow, unfollow,uploadprofilepic,deleteuser,getfollower,updateuser,getusers
 }

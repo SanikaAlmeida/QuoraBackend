@@ -5,7 +5,7 @@ const ask=async (req,res)=>{
         const question=new Question({
             question:req.body.question,
             category:req.body.category,
-            user:req.body.user
+            user:req.user._id
         })
         const ques=await question.save()
         res.send("Question posted")
@@ -24,7 +24,24 @@ const displayques= async(req,res)=>{
         res.send(error)
     }
 }
+const deletequestion=async(req,res)=>{
+    try {
+        const ques=await Question.findById(req.body.id)
+        const q1=await ques.deleteOne()
+        res.send("Question deleted successfully")
+    } catch (error) {
+        res.send("Error in question deletion")
+    }
+}
+const updatequestion=async(req,res)=>{
+    try {
+        const user=await Question.findByIdAndUpdate(req.params.id,req.body,)
+        res.send("Update done")
+    } catch (error) {
+        res.status(500).send("Upadation not done")
+    }
+}
 module.exports={
     ask,
-    displayques
+    displayques,deletequestion,updatequestion
 }
