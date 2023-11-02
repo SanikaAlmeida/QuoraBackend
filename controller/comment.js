@@ -20,5 +20,29 @@ const addcomment= async(req,res)=>{
         res.status(500).send(error)
     }
 }
-
-module.exports={ addcomment}
+const getcomments=async(req,res)=>{
+    try {
+        const comm= await Comment.find().populate('user')
+        res.send(comm)
+    } catch (error) {
+        res.status(500).send("Error while getting comments")
+    }
+}
+const deletecomment=async(req,res)=>{
+    try {
+        const comm=await Comment.findById(req.body.id)
+        const c1=await comm.deleteOne()
+        res.send("Comment deleted successfully")
+    } catch (error) {
+        res.send("Error in comment deletion")
+    }
+}
+const updatecomment=async(req,res)=>{
+    try {
+        const user=await Comment.findByIdAndUpdate(req.params.id,req.body,)
+        res.send("Update done")
+    } catch (error) {
+        res.status(500).send("Upadation not done")
+    }
+}
+module.exports={ addcomment,getcomments,deletecomment,updatecomment}
