@@ -31,7 +31,7 @@ const log= async(req,res)=>{
             const validpassword= await bcrypt.compare(password, user.password)
             if(validpassword){
                 const token=jwt.sign({_id:user._id},process.env.TOKEN_KEY,{expiresIn: "1h"})
-                res.json(token);
+                res.json({token,user});
 
                 sendmail();
                 

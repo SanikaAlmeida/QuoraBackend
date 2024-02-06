@@ -1,23 +1,24 @@
 const Question= require('../model/question')
 
-const ask=async (req,res)=>{
-    try{
-        const question=new Question({
-            question:req.body.question,
-            category:req.body.category,
-            user:req.user._id
-        })
-        const ques=await question.save()
-        res.send("Question posted")
+const ask = async (req, res) => {
+    try {
+        const question = new Question({
+            question: req.body.question,
+            category: req.body.category,
+            user: req.user._id
+        });
+        const postedQuestion = await question.save();
+        
+        res.json({ message: 'Question posted', postedQuestion: { _id: postedQuestion._id } });
+    } catch (error) {
+        res.status(500).send("Unable to ask question");
     }
-    catch(error){
-        res.status(500).send("Unable to ask question")
-    }
-}
+};
+
 
 const displayques= async(req,res)=>{
     try{
-           const questions= await Question.find(req.query)
+           const questions= await Question.find(req.query).populate('user')
            res.json(questions)
     }
     catch(error){

@@ -1,17 +1,12 @@
 const express=require('express')
-const mongoose=require('mongoose')
+const {dbconnect}=require('./config/db')
 require('dotenv').config()
 
-const url=process.env.url
 const port=process.env.port
 
 const app=express()
 app.use(express.json())
-mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology: true}).then(()=>{
-  console.log('connected')
-}).catch((err)=>{
-  console.log(err)
-})
+dbconnect()
 
 const userRouter = require('./routes/user')
 app.use('/user',userRouter)
@@ -28,3 +23,5 @@ app.use('/comment',commentRouter)
   app.listen(port,()=>{
     console.log("Running on port 8080")
   })
+
+module.exports=app

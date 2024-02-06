@@ -12,7 +12,8 @@ const ans= async(req,res)=>{
          question.answer.push(req.body.answer)
         const ans=await answer.save()
         await question.save()
-        res.send("Question answered")
+        res.send({ message: 'Answer posted', ans: { _id: ans._id } });
+
     }
     catch(error){
         res.status(500).send("Unable to answer question"+error)
@@ -54,14 +55,23 @@ const deleteans=async(req,res)=>{
         res.send("Error in answer deletion")
     }
 }
-const updateanswer=async(req,res)=>{
+const updateanswer = async (req, res) => {
     try {
-        const user=await Answer.findByIdAndUpdate(req.params.id,req.body,)
-        res.send("Update done")
+        const answer = await Answer.updateOne({ _id: req.params.id }, req.body);
+        res.send("Update done");
     } catch (error) {
-        res.status(500).send("Upadation not done")
+        res.status(500).send("Updation not done");
+    }
+};
+
+const getanswer=async(req,res)=>{
+    try {
+        const ans =await Answer.find().populate('question')
+        res.json(ans)
+    } catch (error) {
+        res.status(500).send("Couldn't get answers")
     }
 }
 module.exports={ 
-    ans,upvote,downvote,deleteans,updateanswer
+    ans,upvote,downvote,deleteans,updateanswer,getanswer
  }

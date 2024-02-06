@@ -15,7 +15,7 @@ const addcomment= async(req,res)=>{
             res.send("Please mention the answer or question to add comment")
         }
         const savecomment= await newcomment.save()
-        res.send("Comment added")
+        res.send({ message: 'Comment posted', savecomment: { _id: savecomment._id } })
     } catch (error) {
         res.status(500).send(error)
     }
