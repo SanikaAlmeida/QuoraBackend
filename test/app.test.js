@@ -11,7 +11,7 @@ let commentid=''
 
 beforeAll(async () => {
     await dbconnect();
-    await dbupdate();
+    //await dbupdate();
 },10000);
       
 afterAll(async () => {
